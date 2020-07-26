@@ -6,7 +6,10 @@
   "scripts": {
     "task1": "nodemon src/task1.js",
     "task2": "node src/task2.js",
-    "task3": "nodemon src/task3.js"
+    "build": "babel src -d lib",
+    "babel-node": "babel-node --presets=env",
+    "task1:babel": "nodemon --exec npm run babel-node -- ./src/task1.js",
+    "task2:babel": "nodemon --exec npm run babel-node -- ./src/task2.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,8 @@
   "author": "Vldislav Kudashev",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "nodemon": "^2.0.4"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-const {EOL} = require('os');
+import {EOL} from 'os';
 
 const reverseInput = (input) => {
     process.stdout.write(`${input.reverse()}${EOL}`);
