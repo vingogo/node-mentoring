@@ -1,32 +1,51 @@
 {
-  "name": "vk-nodejs-mentoring",
-  "version": "1.0.0",
-  "description": "NodeJS Global Mentoring Program [2020Q3 RU Group 4]",
-  "main": "src/task1.js",
-  "scripts": {
-    "build": "babel src -d lib",
-    "babel-node": "babel-node --presets=env",
-    "task1": "nodemon --exec npm run babel-node -- ./src/task1.js",
-    "task2": "nodemon --exec npm run babel-node -- ./src/task2.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@gitpct.epam.com:Vladislav_Kudashev/vk-nodejs-mentoring.git"
-  },
-  "keywords": [
-    "nodejs",
-    "js",
-    "mentoring"
-  ],
-  "author": "Vldislav Kudashev",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.0.5"
-  },
-  "dependencies": {
-    "csvtojson": "^2.0.10"
-  }
+    "name": "vk-nodejs-mentoring",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "tsc && node dist/app.js",
+        "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
+        "lint": "eslint --ext=js,ts src/**",
+        "lint:fix": "npm run lint --fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@gitpct.epam.com:Vladislav_Kudashev/vk-nodejs-mentoring.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^14.0.27",
+        "@typescript-eslint/eslint-plugin": "^3.8.0",
+        "@typescript-eslint/parser": "^3.8.0",
+        "eslint": "^7.6.0",
+        "husky": "^4.2.5",
+        "lint-staged": "^10.2.11",
+        "nodemon": "^2.0.4",
+        "prettier": "^2.0.5",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7"
+    },
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "tslib": "^2.0.1"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.{js,ts}": [
+            "npm run lint:fix --",
+            "git add"
+        ],
+        "src/**/*.{js,ts,json,md}": [
+            "prettier --write",
+            "git add"
+        ]
+    }
 }
