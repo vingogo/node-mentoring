@@ -1,16 +1,17 @@
-import { createServer, RequestListener } from 'http';
-import { config } from 'dotenv';
+import express from 'express';
+import config from './config';
+import startup from './startup';
 
-config();
+const run = () => {
+    const app = express();
 
-const PORT = process.env.PORT;
-const server = createServer();
+    app.listen(config.port, (err) => {
+        process.stdout.write(err);
+        process.exit(1);
+        return;
+    });
 
-const onRequest: RequestListener = (req, res) => {
-    res.end('Hello world!');
+    console.log(`Server listening on port: ${config.port}`);
 };
 
-server.on('request', onRequest);
-
-server.listen(PORT);
-process.stdout.write(`Server running on port ${PORT}`);
+run();
