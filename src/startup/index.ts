@@ -1,3 +1,8 @@
 import { Application } from 'express';
+import configureExpress from './express';
 
-export default (app: Application) => {};
+export class Startup {
+    public static configure(app: Application): void {
+        configureExpress(app);
+    }
+}

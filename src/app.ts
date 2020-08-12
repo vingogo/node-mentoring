@@ -1,17 +1,32 @@
-import express from 'express';
+import express, { Application } from 'express';
 import config from './config';
-import startup from './startup';
+import { Startup } from './startup';
+import logger from './startup/logger';
+import { Server } from 'http';
 
-const run = () => {
-    const app = express();
+class App {
+    private readonly app: Application;
+    private server: Server | undefined;
 
-    app.listen(config.port, (err) => {
-        process.stdout.write(err);
-        process.exit(1);
-        return;
-    });
+    constructor() {
+        this.app = express();
+        this.configure();
+    }
 
-    console.log(`Server listening on port: ${config.port}`);
-};
+    private configure() {
+        Startup.configure(this.app);
+    }
 
-run();
+    public run() {
+        this.server = this.app.listen(config.port, (err) => {
+            if (err) {
+                logger.error(err);
+                return;
+            }
+            logger.info(`Server listening on port: ${config.port}`);
+        });
+    }
+}
+
+const app = new App();
+app.run();
