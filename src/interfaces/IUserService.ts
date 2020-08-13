@@ -6,7 +6,10 @@ import type {
 } from './IUser';
 
 export interface IUserService {
-    getUsers(): Promise<IUserVM[]>;
+    getAutoSuggestUsers(
+        loginSubstring: string,
+        limit: number
+    ): Promise<IUserVM[]>;
     getUser(id: string): Promise<IUserVM>;
     createUser(user: ICreateUserModel): Promise<ICreateUserModelResponse>;
     updateUser(user: IUpdateUserModel): Promise<IUserVM>;

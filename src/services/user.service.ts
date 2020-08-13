@@ -6,23 +6,30 @@ import type {
     IUserVM
 } from '../interfaces/IUser';
 import { v4 as uuidv4 } from 'uuid';
-import logger from '../startup/logger';
+import { getLogger } from '../startup/logger';
 import { UserVM } from '../models/user.model';
 import { ICreateUserModelResponse } from '../interfaces/IUser';
+import { Logger } from 'winston';
 
 class UserService implements IUserService {
-    private userCollection: IUserModel[];
+    private userCollection: Map<IUserModel['id'], IUserModel>;
+    private readonly logger: Logger;
 
     constructor() {
-        this.userCollection = [
-            {
-                id: '1',
-                password: 'test',
-                login: 'test',
-                isDeleted: false,
-                age: 123
-            }
-        ];
+        this.logger = getLogger('UserService');
+        this.userCollection = new Map();
+    }
+
+    getAutoSuggestUsers(
+        loginSubstring: string,
+        limit: number
+    ): Promise<IUserVM[]> {
+        return Promise.resolve(
+            this.getUserVMs()
+                .filter(({ login }) => login.includes(loginSubstring))
+                .slice(0, limit)
+            // .filter(Boolean)
+        );
     }
 
     async createUser(
@@ -30,88 +37,73 @@ class UserService implements IUserService {
     ): Promise<ICreateUserModelResponse> {
         try {
             const id = uuidv4();
-            this.userCollection.push({
+            this.userCollection.set(id, {
                 ...user,
                 isDeleted: false,
                 id
             });
 
-            logger.info(`User created with id ${id}`);
+            this.logger.info(`User created with id ${id}`);
 
             return Promise.resolve({ id });
         } catch (e) {
-            logger.error(e);
-            return Promise.reject();
+            this.logger.error(e);
+            return Promise.reject(e);
         }
     }
 
     async deleteUser(id: string): Promise<boolean> {
-        logger.info(`User with id ${id} prepare for deletion`);
+        this.logger.info(`User with id ${id} prepare for deletion`);
         const user = this.getUserByIdOrThrow(id);
         user.isDeleted = true;
-        logger.info(`User with id ${id} deleted`);
+        this.logger.info(`User with id ${id} deleted`);
         return Promise.resolve(true);
     }
 
     async getUser(id: string): Promise<IUserVM> {
         try {
-            logger.info(`User with id ${id} requested`);
             const user = this.getUserByIdOrThrow(id);
-            logger.debug('user', user);
 
             return Promise.resolve(new UserVM(user));
         } catch (e) {
-            logger.error(e);
+            this.logger.error(e);
             return Promise.reject(e);
         }
     }
 
-    async getUsers(): Promise<IUserVM[]> {
-        logger.info('User collection requested');
-        return Promise.resolve(
-            this.userCollection.filter(({ isDeleted }) => !isDeleted)
-        );
-    }
-
     async updateUser(user: IUpdateUserModel): Promise<IUserVM> {
         const { id } = user;
-        logger.info(`User with id ${id} prepare for deletion`);
-        const index = this.userCollection.findIndex(
-            ({ id: userId }) => userId === id
-        );
-        if (index < 0) {
-            logger.error('User not found');
-            throw new Error('User not found');
-        }
+        this.logger.info(`User with id ${id} prepare for deletion`);
 
         const original = this.getUserByIdOrThrow(id);
         const updated = {
             ...original,
             ...user
         };
-        this.userCollection = [
-            ...this.userCollection.slice(0, index),
-            updated,
-            ...this.userCollection.slice(index + 1)
-        ];
-        logger.info(`User with id ${id} updated`);
 
-        return Promise.resolve(updated);
+        this.userCollection.set(id, updated);
+        this.logger.info(`User with id ${id} updated`);
+
+        return Promise.resolve(new UserVM(updated));
     }
 
     private getUserByIdOrThrow(id: string): IUserModel {
-        logger.debug('getUserByIdOrThrow invoked');
-        const user = this.userCollection.find(
-            ({ id: userId }) => userId === id
-        );
+        this.logger.debug('getUserByIdOrThrow invoked');
+        const user = this.userCollection.get(id);
 
         if (!user || user.isDeleted) {
-            logger.error('User not found');
+            this.logger.error('User not found');
             throw new Error('User not found');
         }
-        logger.debug(user);
+        this.logger.debug(user);
 
         return user;
+    }
+
+    private getUserVMs() {
+        return Array.from(this.userCollection.values())
+            .filter(({ isDeleted }) => !isDeleted)
+            .map((user) => new UserVM(user));
     }
 }
 
