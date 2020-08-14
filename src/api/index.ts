@@ -10,8 +10,8 @@ export class Api {
     }
 
     private static registerControllers() {
-        Object.values(controllers).forEach(
-            (controller) => new controller(Api.router)
+        Object.values(controllers).forEach((initController) =>
+            initController(Api.router)
         );
     }
 }

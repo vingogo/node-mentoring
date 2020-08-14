@@ -5,11 +5,12 @@ import type {
     IUserModel,
     IUserVM
 } from '../interfaces/IUser';
+import { ICreateUserModelResponse } from '../interfaces/IUser';
 import { v4 as uuidv4 } from 'uuid';
 import { getLogger } from '../startup/logger';
 import { UserVM } from '../models/user.model';
-import { ICreateUserModelResponse } from '../interfaces/IUser';
 import { Logger } from 'winston';
+import { AppError, ErrorCode } from '../common/models/errors/AppError';
 
 class UserService implements IUserService {
     private userCollection: Map<IUserModel['id'], IUserModel>;
@@ -28,7 +29,6 @@ class UserService implements IUserService {
             this.getUserVMs()
                 .filter(({ login }) => login.includes(loginSubstring))
                 .slice(0, limit)
-            // .filter(Boolean)
         );
     }
 
@@ -93,7 +93,7 @@ class UserService implements IUserService {
 
         if (!user || user.isDeleted) {
             this.logger.error('User not found');
-            throw new Error('User not found');
+            throw new AppError('User not found', 404, ErrorCode.DataError);
         }
         this.logger.debug(user);
 

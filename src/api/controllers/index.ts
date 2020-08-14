@@ -1,1 +1,1 @@
-export { UsersController } from './users.controller';
+export { init as usersControllerInit } from './users';
