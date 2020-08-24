@@ -1,7 +1,7 @@
 import { Application, json } from 'express';
-import { Api } from '../api';
 import { Logger } from 'winston';
 import { appErrorHandler } from '../common/middlewares/handleError';
+import { Api } from '~api/index';
 
 export default (app: Application, logger: Logger) => {
     logger.debug('register json bodyParser');

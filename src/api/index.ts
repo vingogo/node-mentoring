@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as controllers from './controllers';
+import { init as initUserController } from './modules/users';
 
 export class Api {
     private static readonly router: Router = Router();
@@ -10,8 +10,6 @@ export class Api {
     }
 
     private static registerControllers() {
-        Object.values(controllers).forEach((initController) =>
-            initController(Api.router)
-        );
+        initUserController(Api.router);
     }
 }

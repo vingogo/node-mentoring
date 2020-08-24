@@ -1,23 +1,23 @@
 import express, { Application } from 'express';
 import config from './config';
-import { Startup } from './startup';
-import { getLogger } from './startup/logger';
 import { Server } from 'http';
 import { Logger } from 'winston';
+import { Startup } from '~api/startup';
+import { getLogger } from '~common/logger';
+import { init } from '~data-access/index';
 
 class App {
     private readonly app: Application;
     private server: Server | undefined;
-    private logger: Logger;
 
-    constructor() {
-        this.logger = getLogger('App');
+    constructor(private logger: Logger) {
         this.app = express();
         this.configure();
     }
 
     private configure() {
         Startup.configure(this.app, this.logger);
+        init();
     }
 
     public run() {
@@ -31,5 +31,5 @@ class App {
     }
 }
 
-const app = new App();
+const app = new App(getLogger('App'));
 app.run();
