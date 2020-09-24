@@ -21,5 +21,7 @@ export function init(): void {
             logger.error('authenticate error');
         });
 
+    sq.sync();
+
     initModules(sq);
 }

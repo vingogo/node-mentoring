@@ -20,5 +20,7 @@ export const createUserSchema = joi.object<ICreateUserVM>().keys({
         .regex(/\d+/, {
             name: 'numeric'
         })
+        .message('Password should contains digits')
         .regex(/\D+/)
+        .message('Password should contains letters')
 });

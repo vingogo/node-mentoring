@@ -20,5 +20,5 @@ export interface IUserService {
 
     updateUser(user: IUserVM): Promise<IUserVM>;
 
-    deleteUser(id: string): Promise<boolean>;
+    deleteUser(id: IUserVM['id']): Promise<boolean>;
 }

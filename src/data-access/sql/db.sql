@@ -27,12 +27,24 @@ ALTER TABLE public.users
 
 INSERT INTO public.users(
 	login, password, age)
-	VALUES ('test', 'test', 25);
+	VALUES ('test', 'test', 25),
+	('test2', 'test2', 24),
+	('test3', 'test3', 30, true);
 
-INSERT INTO public.users(
-	login, password, age)
-	VALUES ('test2', 'test2', 24);
 
-INSERT INTO public.users(
-	login, password, age, "isDeleted")
-	VALUES ('test3', 'test3', 30, true);
+CREATE TABLE public.groups
+(
+    id uuid DEFAULT gen_random_uuid(),
+    name character varying(250) NOT NULL,
+    permissions character varying[],
+    PRIMARY KEY (id)
+)
+
+ALTER TABLE public.groups
+    OWNER to postgres;
+
+
+INSERT INTO public.groups(
+    name, permissions)
+    VALUES ('default', array['READ']),
+    ('admins', array['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'])

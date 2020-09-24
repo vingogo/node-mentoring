@@ -7,7 +7,8 @@ export interface IUserModel {
 }
 
 export type ICreateUserModelDTO = Omit<IUserModel, 'id' | 'isDeleted'>;
-export type IUpdateUserModelDTO = Partial<Omit<IUserModel, 'isDeleted'>>;
+export type IUpdateUserModelDTO = Pick<IUserModel, 'id'> &
+    Partial<ICreateUserModelDTO>;
 
 export interface IUserRepository {
     get(limit: number, substr: string): Promise<IUserModel[]>;
