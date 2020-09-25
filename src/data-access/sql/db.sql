@@ -48,3 +48,23 @@ INSERT INTO public.groups(
     name, permissions)
     VALUES ('default', array['READ']),
     ('admins', array['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'])
+
+CREATE TABLE public."userGroups"
+(
+    "userId" uuid NOT NULL,
+    "groupId" uuid NOT NULL,
+    PRIMARY KEY ("userId", "groupId"),
+    CONSTRAINT users_fk FOREIGN KEY ("userId")
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT VALID,
+    CONSTRAINT groups_fk FOREIGN KEY ("groupId")
+        REFERENCES public.groups (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT VALID
+);
+
+ALTER TABLE public."userGroups"
+    OWNER to postgres;
