@@ -1,0 +1,32 @@
+{
+  "name": "vk-nodejs-mentoring",
+  "version": "1.0.0",
+  "description": "NodeJS Global Mentoring Program [2020Q3 RU Group 4]",
+  "main": "src/task1.js",
+  "scripts": {
+    "build": "babel src -d lib",
+    "babel-node": "babel-node --presets=env",
+    "task1": "nodemon --exec npm run babel-node -- ./src/task1.js",
+    "task2": "nodemon --exec npm run babel-node -- ./src/task2.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitpct.epam.com:Vladislav_Kudashev/vk-nodejs-mentoring.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js",
+    "mentoring"
+  ],
+  "author": "Vldislav Kudashev",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  }
+}
