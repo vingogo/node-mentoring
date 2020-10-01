@@ -1,5 +1,6 @@
-import { AppError, ErrorCode } from '../models/errors/AppError';
 import { NextFunction, Request, Response } from 'express';
+
+import { AppError, ErrorCode } from '../models/errors/AppError';
 
 const DEFAULT_MESSAGE = 'Something went wrong';
 

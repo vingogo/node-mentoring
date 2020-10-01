@@ -1,5 +1,8 @@
-import winston from 'winston';
+import winston, { Logger } from 'winston';
+
 import config from '../config';
+
+export type ILogger = Logger;
 
 const transports: winston.transport[] = [];
 if (process.env.NODE_ENV !== 'development') {
@@ -16,22 +19,19 @@ if (process.env.NODE_ENV !== 'development') {
     );
 }
 
-export function getLogger(moduleName: string) {
-    console.log(`Initializing logger for: ${moduleName}`);
-    winston.loggers.add(moduleName, {
-        level: config.logLevel,
-        levels: winston.config.npm.levels,
-        format: winston.format.combine(
-            winston.format.timestamp({
-                format: 'YYYY-MM-DD HH:mm:ss'
-            }),
-            winston.format.errors({ stack: true }),
-            winston.format.splat(),
-            winston.format.label({ label: moduleName, message: true }),
-            winston.format.json()
-        ),
-        transports
-    });
-
-    return winston.loggers.get(moduleName);
-}
+export const loggerInstance = winston.createLogger({
+    level: config.logLevel,
+    levels: winston.config.npm.levels,
+    format: winston.format.combine(
+        winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        winston.format.errors({ stack: true }),
+        winston.format.splat(),
+        winston.format.colorize(),
+        winston.format.prettyPrint(),
+        winston.format.label(),
+        winston.format.json()
+    ),
+    transports
+});

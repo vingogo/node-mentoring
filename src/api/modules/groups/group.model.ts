@@ -1,5 +1,5 @@
-import { IGroupModel, Permission } from '~integration/groups/types';
 import { IGroupVM } from '~api/modules/groups/types';
+import { IGroupModel, Permission } from '~integration/groups/types';
 
 export class GroupVM implements IGroupVM {
     id: string;

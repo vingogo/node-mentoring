@@ -1,7 +1,8 @@
 import { Schema } from '@hapi/joi';
 import { Request } from 'express';
-import { AppError, ErrorCode } from '../models/errors/AppError';
 import HTTPCodes from 'http-status-codes';
+
+import { AppError, ErrorCode } from '../models/errors/AppError';
 import { AnyRequestHandler } from '../types/express';
 
 type RequestValidationProp = keyof Pick<Request, 'params' | 'body' | 'query'>;

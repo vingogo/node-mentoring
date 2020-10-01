@@ -1,16 +1,31 @@
+import { inject, injectable } from 'inversify';
+
+import { AppError, ErrorCode } from '~api/common/models/errors/AppError';
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
+import { DATA_ACCESS_TYPES } from '~data-access/constants';
+import { IGroupRepository } from '~data-access/modules';
+import { IUserGroupRepository } from '~data-access/modules/userGroups';
 import {
     ICreateGroupModel,
     ICreateGroupModelResponse,
     IGroupModel,
     IGroupService,
-    IUpdateGroupModel
+    IUpdateGroupModel,
+    IUserGroupService
 } from '~integration/groups/types';
-import { Logger } from 'winston';
-import { IGroupRepository } from '~data-access/modules';
-import { AppError, ErrorCode } from '~api/common/models/errors/AppError';
+import { IUserModel } from '~integration/users/types';
 
-export class GroupService implements IGroupService {
-    constructor(private groupRepo: IGroupRepository, private logger: Logger) {}
+@injectable()
+export class GroupService implements IGroupService, IUserGroupService {
+    constructor(
+        @inject(DATA_ACCESS_TYPES.GroupsRepository)
+        private readonly groupRepo: IGroupRepository,
+        @inject(DATA_ACCESS_TYPES.UserGroupsRepository)
+        private readonly userGroupRepo: IUserGroupRepository,
+        @inject(LOGGER_TYPE)
+        private readonly logger: ILogger
+    ) {}
 
     async createGroup(
         model: ICreateGroupModel
@@ -43,5 +58,17 @@ export class GroupService implements IGroupService {
 
     async updateGroup(model: IUpdateGroupModel): Promise<IGroupModel> {
         return this.groupRepo.update(model);
+    }
+
+    async addUsersToGroup(
+        groupId: IGroupModel['id'],
+        userIds: IUserModel['id'][]
+    ): Promise<boolean> {
+        try {
+            return this.userGroupRepo.addUsersToGroup(groupId, userIds);
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
     }
 }

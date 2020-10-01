@@ -1,12 +1,19 @@
-import { ICreateUserVM, IUserService, IUserVM } from './types';
-import { IUserService as IIntegrationUserService } from '~integration/users/types';
-import { Logger } from 'winston';
-import { UserVM } from '~api/modules/users/user.model';
+import { inject, injectable } from 'inversify';
 
+import { UserVM } from '~api/modules/users/user.model';
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
+import { INTEGRATION_TYPES } from '~integration/startup/inversify';
+import { IUserService as IIntegrationUserService } from '~integration/users/types';
+
+import { ICreateUserVM, IUserService, IUserVM } from './types';
+
+@injectable()
 export class UserService implements IUserService {
     constructor(
-        private userService: IIntegrationUserService,
-        private logger: Logger
+        @inject(INTEGRATION_TYPES.UserService)
+        private readonly userService: IIntegrationUserService,
+        @inject(LOGGER_TYPE) private logger: ILogger
     ) {}
 
     async createUser(user: ICreateUserVM): Promise<IUserVM['id']> {

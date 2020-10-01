@@ -1,17 +1,23 @@
+import { inject, injectable } from 'inversify';
+
+import { GroupVM } from '~api/modules/groups/group.model';
 import {
     ICreateGroupVM,
     IGroupService,
     IGroupVM,
     IUpdateGroupVM
 } from '~api/modules/groups/types';
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
 import { IGroupService as IIntegrationGroupService } from '~integration/groups/types';
-import { Logger } from 'winston';
-import { GroupVM } from '~api/modules/groups/group.model';
+import { INTEGRATION_TYPES } from '~integration/startup/inversify';
 
+@injectable()
 export class GroupService implements IGroupService {
     constructor(
+        @inject(INTEGRATION_TYPES.GroupService)
         private groupService: IIntegrationGroupService,
-        private logger: Logger
+        @inject(LOGGER_TYPE) private logger: ILogger
     ) {}
 
     createGroup(group: ICreateGroupVM): Promise<IGroupVM['id']> {

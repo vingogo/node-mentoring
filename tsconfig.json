@@ -10,6 +10,9 @@
         "outDir": "dist",
         "rootDir": "src",
         "baseUrl": "./src",
+        "types": ["reflect-metadata"],
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "paths": {
             "~data-access/*": ["data-access/*"],
             "~integration/*": ["integration/*"],

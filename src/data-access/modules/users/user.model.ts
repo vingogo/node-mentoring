@@ -1,5 +1,7 @@
-import { Model, Sequelize, DataTypes, UUIDV4, Optional } from 'sequelize';
 import { createHash } from 'crypto';
+
+import { Model, Sequelize, DataTypes, UUIDV4, Optional } from 'sequelize';
+
 import { IUserModel } from '~data-access/modules/users/types';
 
 export class UserModel extends Model<
@@ -17,7 +19,7 @@ export function initUserModel(sequelize: Sequelize): void {
     UserModel.init(
         {
             id: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
                 primaryKey: true,
                 defaultValue: UUIDV4
             },

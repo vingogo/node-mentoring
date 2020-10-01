@@ -1,3 +1,5 @@
+import { IUserModel } from '~integration/users/types';
+
 export type Permission = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES';
 
 export interface IGroupModel {
@@ -16,4 +18,11 @@ export interface IGroupService {
     createGroup(model: ICreateGroupModel): Promise<ICreateGroupModelResponse>;
     updateGroup(model: IUpdateGroupModel): Promise<IGroupModel>;
     deleteGroup(id: IGroupModel['id']): Promise<boolean>;
+}
+
+export interface IUserGroupService {
+    addUsersToGroup(
+        groupId: IGroupModel['id'],
+        userIds: IUserModel['id'][]
+    ): Promise<boolean>;
 }

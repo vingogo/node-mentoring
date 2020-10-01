@@ -1,76 +1,67 @@
-import { BaseController } from '~api/common/BaseController';
-import { Request, Response, Router } from 'express';
-import { Logger } from 'winston';
+import { inject } from 'inversify';
+import {
+    BaseHttpController,
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+    httpPut,
+    requestBody,
+    requestParam
+} from 'inversify-express-utils';
+
 import { validate } from '~api/common/middlewares/validate';
 import { guidIdSchema } from '~api/common/validators/IdSchemas';
-import { IdRequestParam } from '~api/common/types/requestParams';
 import {
     createGroupSchema,
     updateGroupSchema
 } from '~api/modules/groups/group.validators';
-import { Params } from 'express-serve-static-core';
 import {
     ICreateGroupVM,
     IGroupService,
-    IGroupVM,
     IUpdateGroupVM
 } from '~api/modules/groups/types';
+import { API_TYPES } from '~api/startup/inversify';
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
 
-export class GroupController extends BaseController {
+@controller('api/groups')
+export class GroupController extends BaseHttpController {
     constructor(
-        router: Router,
-        logger: Logger,
+        @inject(LOGGER_TYPE) private readonly logger: ILogger,
+        @inject(API_TYPES.GroupService)
         private readonly groupService: IGroupService
     ) {
-        super('/groups', router, logger);
+        super();
     }
 
-    protected registerActions() {
-        this.get('/', this.getAllGroups);
-        this.get('/:id', validate(guidIdSchema, 'params'), this.getGroupById);
-        this.post('/', validate(createGroupSchema, 'body'), this.createGroup);
-        this.put('/:id', validate(updateGroupSchema, 'body'), this.updateGroup);
-        this.delete('/:id', validate(guidIdSchema, 'params'), this.deleteGroup);
-    }
-
-    private getAllGroups = async (req: Request, res: Response<IGroupVM[]>) => {
+    @httpGet('/')
+    private async getAllGroups() {
         const groups = await this.groupService.getAll();
-        res.json(groups);
-    };
+        return this.json(groups);
+    }
 
-    private getGroupById = async (
-        req: Request<IdRequestParam>,
-        res: Response<IGroupVM>
-    ) => {
-        const { id } = req.params;
+    @httpGet('/:id', validate(guidIdSchema, 'params'))
+    private async getGroupById(@requestParam() id: string) {
         const group = await this.groupService.getGroup(id);
-        res.json(group);
-    };
+        return this.json(group);
+    }
 
-    private createGroup = async (
-        req: Request<Params, unknown, ICreateGroupVM>,
-        res: Response<IGroupVM['id']>
-    ) => {
-        const group = req.body;
+    @httpPost('/', validate(createGroupSchema, 'body'))
+    private async createGroup(@requestBody() group: ICreateGroupVM) {
         const success = await this.groupService.createGroup(group);
-        res.json(success);
-    };
+        return this.json(success);
+    }
 
-    private updateGroup = async (
-        req: Request<IdRequestParam, unknown, IUpdateGroupVM>,
-        res: Response<IGroupVM>
-    ) => {
-        const group = req.body;
+    @httpPut('/:id', validate(updateGroupSchema, 'body'))
+    private async updateGroup(@requestBody() group: IUpdateGroupVM) {
         const response = await this.groupService.updateGroup(group);
-        res.json(response);
-    };
+        return this.json(response);
+    }
 
-    private deleteGroup = async (
-        req: Request<IdRequestParam>,
-        res: Response<boolean>
-    ) => {
-        const { id } = req.params;
+    @httpDelete('/:id', validate(guidIdSchema, 'params'))
+    private async deleteGroup(@requestParam() id: string) {
         const response = await this.groupService.deleteGroup(id);
-        res.json(response);
-    };
+        return this.json(response);
+    }
 }

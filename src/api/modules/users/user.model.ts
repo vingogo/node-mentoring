@@ -1,5 +1,6 @@
-import { IUserVM } from './types';
 import { IUserModel } from '~integration/users/types';
+
+import { IUserVM } from './types';
 
 export class UserVM implements IUserVM {
     age: number;

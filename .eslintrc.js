@@ -1,6 +1,6 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint'],
+    plugins: ['@typescript-eslint', 'import'],
     extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
     env: {
         browser: true,
@@ -193,7 +193,7 @@ module.exports = {
                 ignoreUrls: true,
                 ignoreComments: false,
                 ignorePattern:
-          '^\\s*(const|let|var)\\s+\\w+\\s+=\\s+/\\.*/(|i|g|m|ig|im|gm|igm);?$'
+                    '^\\s*(const|let|var)\\s+\\w+\\s+=\\s+/\\.*/(|i|g|m|ig|im|gm|igm);?$'
             }
         ],
         'max-nested-callbacks': [2, 4],
@@ -255,7 +255,30 @@ module.exports = {
         // Legacy
         'max-depth': [0, 4],
         'max-params': [2, 7],
-        'no-bitwise': 2
+        'no-bitwise': 2,
+        'import/order': [
+            'error',
+            {
+                groups: [
+                    'builtin',
+                    'external',
+                    'unknown',
+                    'internal',
+                    ['parent', 'sibling', 'index']
+                ],
+                pathGroups: [
+                    {
+                        pattern: '~',
+                        group: 'unknown'
+                    }
+                ],
+                pathGroupsExcludedImportTypes: ['builtin'],
+                'newlines-between': 'always',
+                alphabetize: {
+                    order: 'asc'
+                }
+            }
+        ]
     },
     globals: {
         $: true,

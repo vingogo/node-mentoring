@@ -1,4 +1,10 @@
-import { Logger } from 'winston';
+import { inject, injectable } from 'inversify';
+
+import { AppError, ErrorCode } from '~api/common/models/errors/AppError';
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
+import { DATA_ACCESS_TYPES } from '~data-access/constants';
+import { IUserRepository } from '~data-access/modules/users';
 import {
     ICreateUserModel,
     ICreateUserModelResponse,
@@ -6,11 +12,14 @@ import {
     IUserModel,
     IUserService
 } from '~integration/users/types';
-import { AppError, ErrorCode } from '~api/common/models/errors/AppError';
-import { IUserRepository } from '~data-access/modules/users';
 
+@injectable()
 export class UserService implements IUserService {
-    constructor(private userRepo: IUserRepository, private logger: Logger) {}
+    constructor(
+        @inject(DATA_ACCESS_TYPES.UserRepository)
+        private readonly userRepo: IUserRepository,
+        @inject(LOGGER_TYPE) private readonly logger: ILogger
+    ) {}
 
     async getAutoSuggestUsers(
         loginSubstring: string,

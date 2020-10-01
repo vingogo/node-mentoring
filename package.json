@@ -7,7 +7,7 @@
         "start": "tsc && node dist/app.js",
         "dev": "nodemon",
         "lint": "eslint --ext=js,ts src/**",
-        "lint:fix": "npm run lint --fix"
+        "lint:fix": "npm run lint -- --fix"
     },
     "repository": {
         "type": "git",
@@ -24,6 +24,7 @@
         "@typescript-eslint/eslint-plugin": "^3.8.0",
         "@typescript-eslint/parser": "^3.8.0",
         "eslint": "^7.6.0",
+        "eslint-plugin-import": "^2.22.1",
         "husky": "^4.2.5",
         "lint-staged": "^10.2.11",
         "nodemon": "^2.0.4",
@@ -38,7 +39,10 @@
         "express": "^4.17.1",
         "http-errors": "^1.8.0",
         "http-status-codes": "^1.4.0",
+        "inversify": "^5.0.1",
+        "inversify-express-utils": "^6.3.2",
         "pg": "^8.3.2",
+        "reflect-metadata": "^0.1.13",
         "sequelize": "^6.3.4",
         "tsconfig-paths": "^3.9.0",
         "tslib": "^2.0.1",

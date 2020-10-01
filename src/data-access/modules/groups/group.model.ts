@@ -1,4 +1,5 @@
 import { Sequelize, Model, Optional, DataTypes, UUIDV4 } from 'sequelize';
+
 import { IGroup, Permission } from '~data-access/modules/groups/types';
 
 export class GroupModel extends Model<IGroup, Optional<IGroup, 'id'>> {
@@ -11,7 +12,7 @@ export function initGroupModel(sequelize: Sequelize) {
     GroupModel.init(
         {
             id: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
                 primaryKey: true,
                 defaultValue: UUIDV4
             },

@@ -1,4 +1,5 @@
 import joi from '@hapi/joi';
+
 import {
     ICreateUserVM,
     SuggestedUsersRequestParams

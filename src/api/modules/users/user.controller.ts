@@ -1,89 +1,84 @@
-import type { Request, Response, Router } from 'express';
-import type { Params } from 'express-serve-static-core';
-import type {
-    ICreateUserVM,
-    IUserService,
-    IUserVM,
-    SuggestedUsersRequestParams
-} from './types';
+import type { Response } from 'express';
+import { inject } from 'inversify';
+import {
+    BaseHttpController,
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+    httpPut,
+    queryParam,
+    requestBody,
+    requestParam,
+    response
+} from 'inversify-express-utils';
 
-import { Logger } from 'winston';
-import { createUserSchema, suggestedUsersSchema } from './user.validators';
-import { BaseController } from '~api/common/BaseController';
-import { IdRequestParam } from '~api/common/types/requestParams';
-import { validate } from '~api/common/middlewares/validate';
-import { guidIdSchema } from '~api/common/validators/IdSchemas';
+import { API_TYPES } from '~api/startup/inversify';
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
 
-export class UserController extends BaseController {
+import type { ICreateUserVM, IUserService, IUserVM } from './types';
+
+@controller('/users')
+export class UserController extends BaseHttpController {
     constructor(
-        router: Router,
-        logger: Logger,
+        @inject(LOGGER_TYPE) private readonly logger: ILogger,
+        @inject(API_TYPES.UserService)
         private readonly userService: IUserService
     ) {
-        super('/users', router, logger);
+        super();
     }
 
-    protected registerActions(): void {
-        this.get(
-            '/',
-            validate(suggestedUsersSchema, 'query'),
-            this.getUserList
-        );
-        this.post('/', validate(createUserSchema, 'body'), this.createUser);
-        this.get('/:id', validate(guidIdSchema, 'params'), this.getUser);
-        this.put('/:id', validate(guidIdSchema, 'params'), this.updateUser);
-        this.delete('/:id', validate(guidIdSchema, 'params'), this.deleteUser);
-    }
-
-    private getUserList = async (
-        req: Request<SuggestedUsersRequestParams>,
-        res: Response<IUserVM[]>
-    ) => {
-        const { loginSubstring, limit } = { ...req.params, ...req.query };
+    @httpGet('/')
+    private async getUserList(
+        @queryParam('loginSubstring') loginSubstring: string,
+        @queryParam('limit') limit: string,
+        @response() res: Response<IUserVM[]>
+    ) {
         const users = await this.userService.getAutoSuggestUsers(
             loginSubstring,
             parseInt(limit, 10)
         );
         res.json(users);
-    };
+    }
 
-    private getUser = async (
-        req: Request<IdRequestParam>,
-        res: Response<IUserVM>
-    ) => {
-        const { id } = req.params;
+    @httpGet('/:id')
+    private async getUser(
+        @requestParam('id') id: string,
+        @response() res: Response<IUserVM>
+    ) {
         const user = await this.userService.getUser(id);
         res.json(user);
-    };
+    }
 
-    private createUser = async (
-        req: Request<Params, unknown, ICreateUserVM>,
-        res: Response<IUserVM['id']>
-    ) => {
-        const user = req.body;
+    @httpPost('/')
+    private async createUser(
+        @requestBody() user: ICreateUserVM,
+        @response() res: Response<IUserVM['id']>
+    ) {
         const success = await this.userService.createUser(user);
         res.json(success);
-    };
+    }
 
-    private updateUser = async (
-        req: Request<IdRequestParam, unknown, IUserVM>,
-        res: Response<IUserVM>
-    ) => {
-        const { id } = req.params;
-        const user = req.body;
+    @httpPut('/:id')
+    private async updateUser(
+        @requestParam('id') id: string,
+        @requestBody() user: IUserVM,
+        @response() res: Response<IUserVM>
+    ) {
         const updatedUser = await this.userService.updateUser({
             ...user,
             id
         });
         res.json(updatedUser);
-    };
+    }
 
-    private deleteUser = async (
-        req: Request<IdRequestParam>,
-        res: Response<boolean>
-    ) => {
-        const { id } = req.params;
+    @httpDelete('/:id')
+    private async deleteUser(
+        @requestParam('id') id: string,
+        @response() res: Response<boolean>
+    ) {
         const success = await this.userService.deleteUser(id);
         res.json(success);
-    };
+    }
 }

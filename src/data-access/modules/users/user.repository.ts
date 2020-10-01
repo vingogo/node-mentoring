@@ -1,3 +1,8 @@
+import { inject, injectable } from 'inversify';
+import { Op } from 'sequelize';
+
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
 import {
     ICreateUserModelDTO,
     IUpdateUserModelDTO,
@@ -5,11 +10,10 @@ import {
     IUserRepository
 } from '~data-access/modules/users/types';
 import { UserModel } from '~data-access/modules/users/user.model';
-import { Op } from 'sequelize';
-import { Logger } from 'winston';
 
+@injectable()
 export class UserRepository implements IUserRepository {
-    constructor(private logger: Logger) {}
+    constructor(@inject(LOGGER_TYPE) private logger: ILogger) {}
 
     async create(dto: ICreateUserModelDTO): Promise<IUserModel> {
         const entity = await UserModel.create(dto);

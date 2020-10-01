@@ -1,15 +1,20 @@
+import { inject, injectable } from 'inversify';
+import { Op } from 'sequelize';
+
+import { LOGGER_TYPE } from '~common/constants';
+import { ILogger } from '~common/logger';
+import { GroupModel } from '~data-access/modules/groups/group.model';
+
 import {
     ICreateGroupDTO,
     IGroup,
     IGroupRepository,
     IUpdateGroupDTO
 } from './types';
-import { Logger } from 'winston';
-import { Op } from 'sequelize';
-import { GroupModel } from '~data-access/modules/groups/group.model';
 
+@injectable()
 export class GroupRepository implements IGroupRepository {
-    constructor(private logger: Logger) {}
+    constructor(@inject(LOGGER_TYPE) private logger: ILogger) {}
 
     async create(dto: ICreateGroupDTO): Promise<IGroup> {
         const entity = await GroupModel.create(dto);
