@@ -24,5 +24,5 @@ export interface IUserGroupService {
     addUsersToGroup(
         groupId: IGroupModel['id'],
         userIds: IUserModel['id'][]
-    ): Promise<boolean>;
+    ): Promise<void>;
 }

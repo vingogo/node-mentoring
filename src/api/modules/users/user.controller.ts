@@ -1,4 +1,3 @@
-import type { Response } from 'express';
 import { inject } from 'inversify';
 import {
     BaseHttpController,
@@ -9,8 +8,7 @@ import {
     httpPut,
     queryParam,
     requestBody,
-    requestParam,
-    response
+    requestParam
 } from 'inversify-express-utils';
 
 import { API_TYPES } from '~api/startup/inversify';
@@ -27,58 +25,53 @@ export class UserController extends BaseHttpController {
         private readonly userService: IUserService
     ) {
         super();
+        this.logger.debug('UserController initialized');
     }
 
     @httpGet('/')
     private async getUserList(
         @queryParam('loginSubstring') loginSubstring: string,
-        @queryParam('limit') limit: string,
-        @response() res: Response<IUserVM[]>
+        @queryParam('limit') limit: string
     ) {
+        this.logger.debug('getUserList invoked');
         const users = await this.userService.getAutoSuggestUsers(
             loginSubstring,
             parseInt(limit, 10)
         );
-        res.json(users);
+        return this.json(users);
     }
 
     @httpGet('/:id')
-    private async getUser(
-        @requestParam('id') id: string,
-        @response() res: Response<IUserVM>
-    ) {
+    private async getUser(@requestParam('id') id: string) {
+        this.logger.debug('getUser invoked');
         const user = await this.userService.getUser(id);
-        res.json(user);
+        return this.json(user);
     }
 
     @httpPost('/')
-    private async createUser(
-        @requestBody() user: ICreateUserVM,
-        @response() res: Response<IUserVM['id']>
-    ) {
+    private async createUser(@requestBody() user: ICreateUserVM) {
+        this.logger.debug('createUser invoked');
         const success = await this.userService.createUser(user);
-        res.json(success);
+        return this.json(success);
     }
 
     @httpPut('/:id')
     private async updateUser(
         @requestParam('id') id: string,
-        @requestBody() user: IUserVM,
-        @response() res: Response<IUserVM>
+        @requestBody() user: IUserVM
     ) {
+        this.logger.debug('updateUser invoked');
         const updatedUser = await this.userService.updateUser({
             ...user,
             id
         });
-        res.json(updatedUser);
+        return this.json(updatedUser);
     }
 
     @httpDelete('/:id')
-    private async deleteUser(
-        @requestParam('id') id: string,
-        @response() res: Response<boolean>
-    ) {
+    private async deleteUser(@requestParam('id') id: string) {
+        this.logger.debug('deleteUser invoked');
         const success = await this.userService.deleteUser(id);
-        res.json(success);
+        return this.json(success);
     }
 }

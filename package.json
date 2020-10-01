@@ -5,7 +5,8 @@
     "main": "index.js",
     "scripts": {
         "start": "tsc && node dist/app.js",
-        "dev": "nodemon",
+        "dev": "nodemon src/app.ts",
+        "dev:debug": "nodemon --inspect src/app.ts",
         "lint": "eslint --ext=js,ts src/**",
         "lint:fix": "npm run lint -- --fix"
     },
@@ -62,18 +63,5 @@
             "prettier --write",
             "git add"
         ]
-    },
-    "nodemonConfig": {
-        "ignore": [
-            "**/*.test.ts",
-            "**/*.spec.ts",
-            ".git",
-            "node_modules"
-        ],
-        "watch": [
-            "src"
-        ],
-        "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/app.ts",
-        "ext": "ts, js"
     }
 }

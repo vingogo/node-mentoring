@@ -18,22 +18,18 @@ export class UserGroupsRepository implements IUserGroupRepository {
     async addUsersToGroup(
         groupId: GroupModel['id'],
         userIds: UserModel['id'][]
-    ): Promise<boolean> {
-        return this.sequelize
-            .transaction(async (transaction) => {
-                await UserGroupsModel.bulkCreate(
-                    userIds.map((userId) => ({
-                        userId,
-                        groupId
-                    })),
-                    {
-                        transaction
-                    }
-                );
-            })
-            .then(
-                () => true,
-                () => false
-            );
+    ): Promise<void> {
+        const records = userIds.map((userId) => ({
+            groupId,
+            userId
+        }));
+        this.logger.debug(`records to insert ${JSON.stringify(records)}`);
+
+        await this.sequelize.transaction(async (transaction) => {
+            await UserGroupsModel.bulkCreate(records, {
+                transaction,
+                returning: true
+            });
+        });
     }
 }

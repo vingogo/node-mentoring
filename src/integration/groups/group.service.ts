@@ -63,9 +63,9 @@ export class GroupService implements IGroupService, IUserGroupService {
     async addUsersToGroup(
         groupId: IGroupModel['id'],
         userIds: IUserModel['id'][]
-    ): Promise<boolean> {
+    ): Promise<void> {
         try {
-            return this.userGroupRepo.addUsersToGroup(groupId, userIds);
+            await this.userGroupRepo.addUsersToGroup(groupId, userIds);
         } catch (e) {
             this.logger.error(e);
             throw e;

@@ -47,7 +47,7 @@ export function initUserModel(sequelize: Sequelize): void {
         },
         {
             sequelize,
-            modelName: 'user',
+            modelName: 'users',
             timestamps: false
         }
     );

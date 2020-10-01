@@ -24,7 +24,7 @@ export function initGroupModel(sequelize: Sequelize) {
         },
         {
             sequelize,
-            modelName: 'group',
+            modelName: 'groups',
             timestamps: false
         }
     );

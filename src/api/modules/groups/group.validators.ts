@@ -16,3 +16,8 @@ export const updateGroupSchema = joi.object<IUpdateGroupVM>().keys({
     name: joi.string(),
     permissions: joi.array().items(joi.string().valid(...permissions))
 });
+
+export const userIdsSchema = joi
+    .array()
+    .required()
+    .items(joi.string().guid({ version: 'uuidv4' }));

@@ -9,5 +9,5 @@ export interface IUserGroupRepository {
     addUsersToGroup(
         groupId: GroupModel['id'],
         userIds: UserModel['id'][]
-    ): Promise<boolean>;
+    ): Promise<void>;
 }

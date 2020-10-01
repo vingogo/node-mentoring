@@ -13,11 +13,17 @@ export function initUserGroupsModel(sequelize: Sequelize) {
         {
             userId: {
                 type: DataTypes.UUIDV4,
-                primaryKey: true
+                references: {
+                    model: UserModel as typeof Model,
+                    key: 'id'
+                }
             },
             groupId: {
                 type: DataTypes.UUIDV4,
-                primaryKey: true
+                references: {
+                    model: GroupModel as typeof Model,
+                    key: 'id'
+                }
             }
         },
         {
@@ -26,9 +32,11 @@ export function initUserGroupsModel(sequelize: Sequelize) {
             timestamps: false
         }
     );
+
     UserModel.belongsToMany(GroupModel, {
         through: UserGroupsModel as typeof Model
     });
+
     GroupModel.belongsToMany(UserModel, {
         through: UserGroupsModel as typeof Model
     });

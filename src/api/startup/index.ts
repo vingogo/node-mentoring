@@ -20,7 +20,9 @@ export class Startup {
     }
 
     private static configureServer() {
-        const server = new InversifyExpressServer(this.container);
+        const server = new InversifyExpressServer(this.container, null, {
+            rootPath: '/api'
+        });
         server.setConfig(configureExpress);
         server.setErrorConfig(configureErrors);
 
