@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
+import { loggerInstance } from '~common/logger';
+
 import { AppError, ErrorCode } from '../models/errors/AppError';
 
 const DEFAULT_MESSAGE = 'Something went wrong';
@@ -11,6 +13,8 @@ export function appErrorHandler(
     // eslint-disable-next-line no-unused-vars
     next: NextFunction
 ): void {
+    loggerInstance.error(error.toString());
+
     const {
         httpCode = 500,
         message = DEFAULT_MESSAGE,

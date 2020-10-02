@@ -10,6 +10,7 @@ import {
     requestParam
 } from 'inversify-express-utils';
 
+import { log } from '~api/common/decorators/log';
 import { validate } from '~api/common/middlewares/validate';
 import { guidIdSchema } from '~api/common/validators/IdSchemas';
 import {
@@ -30,7 +31,7 @@ import { ILogger } from '~common/logger';
 import { IUserGroupService } from '~integration/groups';
 import { INTEGRATION_TYPES } from '~integration/startup/inversify';
 
-@controller('/groups')
+@controller('/groups', API_TYPES.LogMiddleware)
 export class GroupController extends BaseHttpController {
     constructor(
         @inject(LOGGER_TYPE) private readonly logger: ILogger,
@@ -40,44 +41,44 @@ export class GroupController extends BaseHttpController {
         private readonly userGroupService: IUserGroupService
     ) {
         super();
-        this.logger.debug('GroupController initialized');
     }
 
+    @log
     @httpGet('/')
     private async getAllGroups() {
-        this.logger.debug('getAllGroups invoked');
         const groups = await this.groupService.getAll();
         return this.json(groups);
     }
 
+    @log
     @httpGet('/:id', validate(guidIdSchema, 'params'))
     private async getGroupById(@requestParam('id') id: string) {
-        this.logger.debug('getGroupById invoked');
         const group = await this.groupService.getGroup(id);
         return this.json(group);
     }
 
+    @log
     @httpPost('/', validate(createGroupSchema, 'body'))
     private async createGroup(@requestBody() group: ICreateGroupVM) {
-        this.logger.debug('createGroup invoked');
         const success = await this.groupService.createGroup(group);
         return this.json(success);
     }
 
+    @log
     @httpPut('/:id', validate(updateGroupSchema, 'body'))
     private async updateGroup(@requestBody() group: IUpdateGroupVM) {
-        this.logger.debug('updateGroup invoked');
         const response = await this.groupService.updateGroup(group);
         return this.json(response);
     }
 
+    @log
     @httpDelete('/:id', validate(guidIdSchema, 'params'))
     private async deleteGroup(@requestParam('id') id: string) {
-        this.logger.debug('deleteGroup invoked');
         const response = await this.groupService.deleteGroup(id);
         return this.json(response);
     }
 
+    @log
     @httpPut(
         '/:id/users',
         validate(guidIdSchema, 'params'),
@@ -87,9 +88,6 @@ export class GroupController extends BaseHttpController {
         @requestParam('id') groupId: IGroupVM['id'],
         @requestBody() userIds: IUserVM['id'][]
     ) {
-        this.logger.debug('addUsersToGroup invoked');
-        this.logger.debug(groupId);
-        this.logger.debug(userIds);
         await this.userGroupService.addUsersToGroup(groupId, userIds);
         return this.ok();
     }

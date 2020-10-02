@@ -11,13 +11,20 @@ import {
     requestParam
 } from 'inversify-express-utils';
 
+import { log } from '~api/common/decorators/log';
+import { validate } from '~api/common/middlewares/validate';
+import { guidIdSchema } from '~api/common/validators/IdSchemas';
+import {
+    createUserSchema,
+    suggestedUsersSchema
+} from '~api/modules/users/user.validators';
 import { API_TYPES } from '~api/startup/inversify';
 import { LOGGER_TYPE } from '~common/constants';
 import { ILogger } from '~common/logger';
 
 import type { ICreateUserVM, IUserService, IUserVM } from './types';
 
-@controller('/users')
+@controller('/users', API_TYPES.LogMiddleware)
 export class UserController extends BaseHttpController {
     constructor(
         @inject(LOGGER_TYPE) private readonly logger: ILogger,
@@ -25,15 +32,14 @@ export class UserController extends BaseHttpController {
         private readonly userService: IUserService
     ) {
         super();
-        this.logger.debug('UserController initialized');
     }
 
-    @httpGet('/')
+    @log
+    @httpGet('/', validate(suggestedUsersSchema, 'query'))
     private async getUserList(
         @queryParam('loginSubstring') loginSubstring: string,
         @queryParam('limit') limit: string
     ) {
-        this.logger.debug('getUserList invoked');
         const users = await this.userService.getAutoSuggestUsers(
             loginSubstring,
             parseInt(limit, 10)
@@ -41,21 +47,28 @@ export class UserController extends BaseHttpController {
         return this.json(users);
     }
 
-    @httpGet('/:id')
+    @log
+    @httpGet('/:id', validate(guidIdSchema, 'params'))
     private async getUser(@requestParam('id') id: string) {
         this.logger.debug('getUser invoked');
         const user = await this.userService.getUser(id);
         return this.json(user);
     }
 
-    @httpPost('/')
+    @log
+    @httpPost('/', validate(createUserSchema, 'body'))
     private async createUser(@requestBody() user: ICreateUserVM) {
         this.logger.debug('createUser invoked');
         const success = await this.userService.createUser(user);
         return this.json(success);
     }
 
-    @httpPut('/:id')
+    @log
+    @httpPut(
+        '/:id',
+        validate(createUserSchema, 'body'),
+        validate(guidIdSchema, 'params')
+    )
     private async updateUser(
         @requestParam('id') id: string,
         @requestBody() user: IUserVM
@@ -68,9 +81,9 @@ export class UserController extends BaseHttpController {
         return this.json(updatedUser);
     }
 
-    @httpDelete('/:id')
+    @log
+    @httpDelete('/:id', validate(guidIdSchema, 'params'))
     private async deleteUser(@requestParam('id') id: string) {
-        this.logger.debug('deleteUser invoked');
         const success = await this.userService.deleteUser(id);
         return this.json(success);
     }

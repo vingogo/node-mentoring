@@ -12,4 +12,8 @@ export class AppError extends Error {
     ) {
         super(message);
     }
+
+    toString() {
+        return `Code: ${this.code}; HTTP: ${this.httpCode}; ${this.message}`;
+    }
 }
