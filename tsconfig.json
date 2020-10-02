@@ -1,15 +1,22 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "sourceMap": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "outDir": "dist",
-    "rootDir": "src"
-  },
-  "exclude": ["node_modules"],
-  "include": ["src/**/*"]
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "sourceMap": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "importHelpers": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "baseUrl": "./src",
+        "paths": {
+            "~data-access/*": ["data-access/*"],
+            "~integration/*": ["integration/*"],
+            "~api/*": ["api/*"],
+            "~common/*": ["common/*"]
+        }
+    },
+    "exclude": ["node_modules"],
+    "include": ["src/**/*"]
 }

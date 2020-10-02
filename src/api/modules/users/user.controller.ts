@@ -1,22 +1,20 @@
 import type { Request, Response, Router } from 'express';
 import type { Params } from 'express-serve-static-core';
 import type {
-    ICreateUserModel,
-    ICreateUserModelResponse,
-    IUpdateUserModel,
-    IUserVM
-} from '../../../interfaces/IUser';
-import type { SuggestedUsersRequestParams } from './types';
+    ICreateUserVM,
+    IUserService,
+    IUserVM,
+    SuggestedUsersRequestParams
+} from './types';
 
-import { BaseController } from '../../../common/BaseController';
-import { IUserService } from '../../../interfaces/IUserService';
 import { Logger } from 'winston';
-import { createUserSchema, suggestedUsersSchema } from './validators';
-import { validate } from '../../../common/middlewares/validate';
-import { guidIdSchema } from '../../../common/validators/IdSchemas';
-import { IdRequestParam } from '../../../common/types/requestParams';
+import { createUserSchema, suggestedUsersSchema } from './user.validators';
+import { BaseController } from '~api/common/BaseController';
+import { IdRequestParam } from '~api/common/types/requestParams';
+import { validate } from '~api/common/middlewares/validate';
+import { guidIdSchema } from '~api/common/validators/IdSchemas';
 
-export class UsersController extends BaseController {
+export class UserController extends BaseController {
     constructor(
         router: Router,
         logger: Logger,
@@ -59,8 +57,8 @@ export class UsersController extends BaseController {
     };
 
     private createUser = async (
-        req: Request<Params, unknown, ICreateUserModel>,
-        res: Response<ICreateUserModelResponse>
+        req: Request<Params, unknown, ICreateUserVM>,
+        res: Response<IUserVM['id']>
     ) => {
         const user = req.body;
         const success = await this.userService.createUser(user);
@@ -68,8 +66,8 @@ export class UsersController extends BaseController {
     };
 
     private updateUser = async (
-        req: Request<IdRequestParam, unknown, IUpdateUserModel>,
-        res: Response<IUpdateUserModel>
+        req: Request<IdRequestParam, unknown, IUserVM>,
+        res: Response<IUserVM>
     ) => {
         const { id } = req.params;
         const user = req.body;
