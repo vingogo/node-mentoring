@@ -1,3 +1,4 @@
+import cors from 'cors';
 import { Application, json } from 'express';
 
 import { loggerInstance } from '~common/logger';
@@ -6,6 +7,7 @@ import { appErrorHandler } from '../common/middlewares/handleError';
 
 export function configureExpress(app: Application) {
     app.use(json());
+    app.use(cors());
 }
 
 export function configureErrors(app: Application) {
