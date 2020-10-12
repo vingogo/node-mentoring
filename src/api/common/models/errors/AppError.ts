@@ -1,7 +1,8 @@
 export enum ErrorCode {
     DataError,
     ValidationError,
-    Unknown
+    Unknown,
+    Authorization
 }
 
 export class AppError extends Error {

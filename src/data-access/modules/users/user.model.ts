@@ -1,7 +1,6 @@
-import { createHash } from 'crypto';
-
 import { Model, Sequelize, DataTypes, UUIDV4, Optional } from 'sequelize';
 
+import { getHashCode } from '~common/security';
 import { IUserModel } from '~data-access/modules/users/types';
 
 export class UserModel extends Model<
@@ -28,10 +27,7 @@ export function initUserModel(sequelize: Sequelize): void {
                 type: DataTypes.STRING,
                 allowNull: false,
                 set(val: string) {
-                    this.setDataValue(
-                        'password',
-                        createHash('md5').update(val).digest('hex')
-                    );
+                    this.setDataValue('password', getHashCode(val));
                 }
             },
             age: {

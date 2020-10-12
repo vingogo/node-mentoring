@@ -1,25 +1,30 @@
 import { Container } from 'inversify';
 
 import { LogRequestMiddleware } from '~api/common/middlewares/logRequest';
-import { GroupService } from '~api/modules/groups/group.service';
-import { IGroupService } from '~api/modules/groups/types';
-import { IUserService } from '~api/modules/users/types';
-import { UserService } from '~api/modules/users/user.service';
+import {
+    AccessService,
+    AuthorizeMiddleware,
+    IAccessService,
+    ITokenManager,
+    TokenManager
+} from '~api/modules/access/';
+import { GroupService, IGroupService } from '~api/modules/groups';
+import { IUserService, UserService } from '~api/modules/users';
+import { API_TYPES } from '~api/startup/constants';
 import { LOGGER_TYPE } from '~common/constants';
-import { loggerInstance, ILogger } from '~common/logger';
-
-export const API_TYPES = {
-    UserService: Symbol.for('userService'),
-    GroupService: Symbol.for('groupService'),
-    LogMiddleware: Symbol.for('logMiddleware')
-} as const;
+import { ILogger, loggerInstance } from '~common/logger';
 
 export function configureDIContainer(container: Container): void {
     container.bind<IUserService>(API_TYPES.UserService).to(UserService);
     container.bind<IGroupService>(API_TYPES.GroupService).to(GroupService);
     container.bind<ILogger>(LOGGER_TYPE).toConstantValue(loggerInstance);
+    container.bind<IAccessService>(API_TYPES.AccessService).to(AccessService);
+    container.bind<ITokenManager>(API_TYPES.TokenManager).to(TokenManager);
 
     container
         .bind<LogRequestMiddleware>(API_TYPES.LogMiddleware)
         .to(LogRequestMiddleware);
+    container
+        .bind<AuthorizeMiddleware>(API_TYPES.AuthorizeMiddleware)
+        .to(AuthorizeMiddleware);
 }

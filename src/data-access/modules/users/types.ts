@@ -13,6 +13,7 @@ export type IUpdateUserModelDTO = Pick<IUserModel, 'id'> &
 export interface IUserRepository {
     get(limit: number, substr: string): Promise<IUserModel[]>;
     getById(id: IUserModel['id']): Promise<IUserModel | null>;
+    getUserByLogin(login: IUserModel['login']): Promise<IUserModel | null>;
     create(dto: ICreateUserModelDTO): Promise<IUserModel>;
     update(dto: IUpdateUserModelDTO): Promise<IUserModel>;
     delete(id: IUserModel['id']): Promise<boolean>;

@@ -1,17 +1,19 @@
 import { Container } from 'inversify';
 
-import { GroupService } from '~integration/groups/group.service';
-import { IGroupService, IUserGroupService } from '~integration/groups/types';
-import { IUserService } from '~integration/users/types';
-import { UserService } from '~integration/users/user.service';
+import { AccessService } from '../access/access.service';
+import { IAccessService } from '../access/types';
+import { GroupService, IGroupService, IUserGroupService } from '../groups';
+import { IUserService } from '../users/types';
+import { UserService } from '../users/user.service';
 
 export const INTEGRATION_TYPES = {
     UserService: Symbol.for('BlUserService'),
     GroupService: Symbol.for('BlGroupService'),
-    UserGroupService: Symbol.for('BLUserGroupService')
+    UserGroupService: Symbol.for('BLUserGroupService'),
+    AccessService: Symbol.for('BLAccessService')
 };
 
-export function configureContainer(container: Container) {
+export function configureContainer(container: Container): void {
     container.bind<IUserService>(INTEGRATION_TYPES.UserService).to(UserService);
     container
         .bind<IGroupService>(INTEGRATION_TYPES.GroupService)
@@ -19,4 +21,7 @@ export function configureContainer(container: Container) {
     container
         .bind<IUserGroupService>(INTEGRATION_TYPES.UserGroupService)
         .to(GroupService);
+    container
+        .bind<IAccessService>(INTEGRATION_TYPES.AccessService)
+        .to(AccessService);
 }

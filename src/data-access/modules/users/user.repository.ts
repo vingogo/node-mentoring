@@ -81,4 +81,14 @@ export class UserRepository implements IUserRepository {
 
         return entity.save();
     }
+
+    async getUserByLogin(
+        login: IUserModel['login']
+    ): Promise<IUserModel | null> {
+        return UserModel.findOne({
+            where: {
+                login
+            }
+        });
+    }
 }

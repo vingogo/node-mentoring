@@ -25,13 +25,13 @@ import {
     IUpdateGroupVM
 } from '~api/modules/groups/types';
 import { IUserVM } from '~api/modules/users/types';
-import { API_TYPES } from '~api/startup/inversify';
+import { API_TYPES } from '~api/startup/constants';
 import { LOGGER_TYPE } from '~common/constants';
 import { ILogger } from '~common/logger';
 import { IUserGroupService } from '~integration/groups';
 import { INTEGRATION_TYPES } from '~integration/startup/inversify';
 
-@controller('/groups', API_TYPES.LogMiddleware)
+@controller('/groups', API_TYPES.LogMiddleware, API_TYPES.AuthorizeMiddleware)
 export class GroupController extends BaseHttpController {
     constructor(
         @inject(LOGGER_TYPE) private readonly logger: ILogger,

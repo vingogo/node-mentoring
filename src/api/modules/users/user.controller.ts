@@ -18,13 +18,13 @@ import {
     createUserSchema,
     suggestedUsersSchema
 } from '~api/modules/users/user.validators';
-import { API_TYPES } from '~api/startup/inversify';
+import { API_TYPES } from '~api/startup/constants';
 import { LOGGER_TYPE } from '~common/constants';
 import { ILogger } from '~common/logger';
 
 import type { ICreateUserVM, IUserService, IUserVM } from './types';
 
-@controller('/users', API_TYPES.LogMiddleware)
+@controller('/users', API_TYPES.LogMiddleware, API_TYPES.AuthorizeMiddleware)
 export class UserController extends BaseHttpController {
     constructor(
         @inject(LOGGER_TYPE) private readonly logger: ILogger,

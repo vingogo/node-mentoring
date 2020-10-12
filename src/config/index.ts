@@ -6,6 +6,10 @@ if (envFound.error) {
     throw new Error("Couldn't find .env file");
 }
 
+if (!process.env.jwt_secret || !process.env.jwt_secret_pub) {
+    throw new Error('Please provide jwt secrets');
+}
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 export default {
@@ -16,5 +20,7 @@ export default {
         password: process.env.db_pwd || 'postgres',
         database: process.env.db_name || 'usersDB',
         host: process.env.db_host || 'localhost'
-    }
+    },
+    jwtSecret: process.env.jwt_secret,
+    jwtSecretPub: process.env.jwt_secret_pub
 };
