@@ -10,7 +10,7 @@
         "outDir": "dist",
         "rootDir": "src",
         "baseUrl": "./src",
-        "types": ["reflect-metadata"],
+        "types": ["reflect-metadata", "jest"],
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "paths": {

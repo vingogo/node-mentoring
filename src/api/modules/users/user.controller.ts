@@ -36,7 +36,7 @@ export class UserController extends BaseHttpController {
 
     @log
     @httpGet('/', validate(suggestedUsersSchema, 'query'))
-    private async getUserList(
+    public async getUserList(
         @queryParam('loginSubstring') loginSubstring: string,
         @queryParam('limit') limit: string
     ) {
@@ -49,7 +49,7 @@ export class UserController extends BaseHttpController {
 
     @log
     @httpGet('/:id', validate(guidIdSchema, 'params'))
-    private async getUser(@requestParam('id') id: string) {
+    public async getUser(@requestParam('id') id: string) {
         this.logger.debug('getUser invoked');
         const user = await this.userService.getUser(id);
         return this.json(user);
@@ -57,7 +57,7 @@ export class UserController extends BaseHttpController {
 
     @log
     @httpPost('/', validate(createUserSchema, 'body'))
-    private async createUser(@requestBody() user: ICreateUserVM) {
+    public async createUser(@requestBody() user: ICreateUserVM) {
         this.logger.debug('createUser invoked');
         const success = await this.userService.createUser(user);
         return this.json(success);
@@ -69,7 +69,7 @@ export class UserController extends BaseHttpController {
         validate(createUserSchema, 'body'),
         validate(guidIdSchema, 'params')
     )
-    private async updateUser(
+    public async updateUser(
         @requestParam('id') id: string,
         @requestBody() user: IUserVM
     ) {
@@ -83,7 +83,7 @@ export class UserController extends BaseHttpController {
 
     @log
     @httpDelete('/:id', validate(guidIdSchema, 'params'))
-    private async deleteUser(@requestParam('id') id: string) {
+    public async deleteUser(@requestParam('id') id: string) {
         const success = await this.userService.deleteUser(id);
         return this.json(success);
     }
