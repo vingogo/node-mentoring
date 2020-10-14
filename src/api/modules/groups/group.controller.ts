@@ -45,35 +45,35 @@ export class GroupController extends BaseHttpController {
 
     @log
     @httpGet('/')
-    private async getAllGroups() {
+    public async getAllGroups() {
         const groups = await this.groupService.getAll();
         return this.json(groups);
     }
 
     @log
     @httpGet('/:id', validate(guidIdSchema, 'params'))
-    private async getGroupById(@requestParam('id') id: string) {
+    public async getGroupById(@requestParam('id') id: string) {
         const group = await this.groupService.getGroup(id);
         return this.json(group);
     }
 
     @log
     @httpPost('/', validate(createGroupSchema, 'body'))
-    private async createGroup(@requestBody() group: ICreateGroupVM) {
+    public async createGroup(@requestBody() group: ICreateGroupVM) {
         const success = await this.groupService.createGroup(group);
         return this.json(success);
     }
 
     @log
     @httpPut('/:id', validate(updateGroupSchema, 'body'))
-    private async updateGroup(@requestBody() group: IUpdateGroupVM) {
+    public async updateGroup(@requestBody() group: IUpdateGroupVM) {
         const response = await this.groupService.updateGroup(group);
         return this.json(response);
     }
 
     @log
     @httpDelete('/:id', validate(guidIdSchema, 'params'))
-    private async deleteGroup(@requestParam('id') id: string) {
+    public async deleteGroup(@requestParam('id') id: string) {
         const response = await this.groupService.deleteGroup(id);
         return this.json(response);
     }
@@ -84,7 +84,7 @@ export class GroupController extends BaseHttpController {
         validate(guidIdSchema, 'params'),
         validate(userIdsSchema, 'body')
     )
-    private async addUsersToGroup(
+    public async addUsersToGroup(
         @requestParam('id') groupId: IGroupVM['id'],
         @requestBody() userIds: IUserVM['id'][]
     ) {

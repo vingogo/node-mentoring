@@ -3,7 +3,7 @@ import { cleanUpMetadata, results } from 'inversify-express-utils';
 
 import { ILogger } from '~common/logger';
 
-import { IUserService, IUserVM } from './types';
+import { ICreateUserVM, IUserService, IUserVM } from './types';
 import { UserController } from './user.controller';
 
 const logger: ILogger = {
@@ -63,6 +63,70 @@ describe('UserController', () => {
                 expect(response).toBeInstanceOf(results.JsonResult);
                 expect(response.statusCode).toBe(200);
                 expect(response.json).toStrictEqual(userMock);
+            });
+        });
+
+        describe('createUser', () => {
+            const userMock: ICreateUserVM = {
+                login: 'foo',
+                password: 'bar',
+                age: 25
+            };
+
+            it('should work', async () => {
+                controller = new UserController(logger, {
+                    async createUser(vm): Promise<string> {
+                        expect(vm).toBe(userMock);
+                        return '123';
+                    }
+                } as IUserService);
+
+                const response = await controller.createUser(userMock);
+
+                expect(response).toBeInstanceOf(results.JsonResult);
+                expect(response.statusCode).toBe(200);
+                expect(response.json).toEqual('123');
+            });
+        });
+
+        describe('updateUser', () => {
+            const userMock: IUserVM = {
+                login: 'foo',
+                password: 'bar',
+                age: 25,
+                id: '123'
+            };
+
+            it('should work', async () => {
+                controller = new UserController(logger, {
+                    async updateUser(vm): Promise<IUserVM> {
+                        expect(vm).toStrictEqual(userMock);
+                        return userMock;
+                    }
+                } as IUserService);
+
+                const response = await controller.updateUser('123', userMock);
+
+                expect(response).toBeInstanceOf(results.JsonResult);
+                expect(response.statusCode).toBe(200);
+                expect(response.json).toStrictEqual(userMock);
+            });
+        });
+
+        describe('deleteUser', () => {
+            it('should work', async () => {
+                controller = new UserController(logger, {
+                    async deleteUser(vm): Promise<boolean> {
+                        expect(vm).toBe('123');
+                        return true;
+                    }
+                } as IUserService);
+
+                const response = await controller.deleteUser('123');
+
+                expect(response).toBeInstanceOf(results.JsonResult);
+                expect(response.statusCode).toBe(200);
+                expect(response.json).toEqual(true);
             });
         });
     });
